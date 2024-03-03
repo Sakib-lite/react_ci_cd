@@ -1,20 +1,27 @@
-image: docker:dind
-
-stages:
-  - build_and_push
-
-build_and_push:
-  stage: build_and_push
+docker-build-master:
+  # Official docker image.
+  image: docker:latest
+  stage: build
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
-    - apk add --no-cache git  # Install Git if needed on runner
-  
-    # Optional debug commands (uncomment if needed)
-    # - docker --version
-    # - docker info
-    # - docker ps
-  
-    - docker build -t sakib75/react_ci_cd:latest .
-    - docker push sakib75/react_ci_cd:latest
+    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+    - docker push "$CI_REGISTRY_IMAGE"
+  only:
+    - main
 
-variables:
-  DOCKER_USERNAME: $DOCKER_USERNAME  # Protected variable in GitLab settings
+docker-build:
+  # Official docker image.
+  image: docker:latest
+  stage: build
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+  except:
+    - main
