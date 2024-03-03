@@ -1,6 +1,4 @@
-image: 
-  -node:18-alpine
-  -docker:dind
+image: docker:dind
 
 stages:
   - build_and_push
