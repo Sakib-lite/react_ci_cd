@@ -5,6 +5,12 @@ docker-build-master:
   services:
     - docker:dind
   script:
+    - echo "sakib starts"
+    - echo $CI_REGISTRY
+    - echo $CI_REGISTRY_USER
+    - echo $CI_REGISTRY_IMAGE
+    - echo $DOCKER_ACCESS_TOKEN
+    - echo "sakib ends"
     - export DOCKER_AUTH_CONFIG="{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$DOCKER_ACCESS_TOKEN\"}}}"
     - docker build --pull -t "$CI_REGISTRY_IMAGE" .
     - docker push "$CI_REGISTRY_IMAGE"
