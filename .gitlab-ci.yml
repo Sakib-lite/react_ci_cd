@@ -1,26 +1,21 @@
-build:
-  image: docker:20.10.16
-  services:
-    - docker:20.10.16-dind
-  variables:
-    DOCKER_TLS_CERTDIR: "/certs"
-    SERVICES: ["app", "db"]  # Define SERVICES here
-  before_script:
-    - echo "$DOCKER_ACCESS_TOKEN" | docker login -u "$DOCKERHUB_USER" --password-stdin
+image: node:18-alpine  # Image with Node.js for building React app
+
+stages:
+  - build_and_push  # Stage for building and pushing the image
+
+build_and_push:
+  stage: build_and_push
   script:
-    - |
-      for SERVICE in $SERVICES; do
-        if [ -d "$SERVICE" ]; then
-          echo "Building and pushing $SERVICE service..."
-          VERSION=$(grep '<version>' $SERVICE/pom.xml | sed -n '2s/[^0-9.]//gp')
-          docker build -t $DOCKERHUB_USER/test:$SERVICE-$VERSION ./$SERVICE/
-          docker push $DOCKERHUB_USER/test:$SERVICE-$VERSION
-        else
-          echo "Directory $SERVICE not found. Skipping..."
-        fi
-      done
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
-      changes:
-        - app/**
-        - db/**
+    - apk add --no-cache npm  # Install npm
+    - cd app  # Change directory to the app directory
+    - npm install  # Install dependencies
+    - npm run build  # Build the React app (adjust if needed)
+    - docker build -t sakib75/react_ci_cd:latest .  # Build Docker image (replace with your username)
+  artifacts:
+    paths:
+      - app/build/  # Specify the output directory of your build process (adjust path if needed)
+  only:
+    - main  # Run the pipeline only for pushes to the master branch (optional)
+
+variables:
+  DOCKER_USERNAME: $DOCKER_USERNAME  # Protected variable in GitLab settings
