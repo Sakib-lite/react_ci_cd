@@ -4,9 +4,8 @@ docker-build-master:
   stage: build
   services:
     - docker:dind
-  before_script:
-    - echo "$DOCKER_ACCESS_TOKEN" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
+    - echo "$DOCKER_ACCESS_TOKEN" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
     - docker build --pull -t "$CI_REGISTRY_IMAGE" .
     - docker push "$CI_REGISTRY_IMAGE"
   only:
@@ -18,9 +17,8 @@ docker-build:
   stage: build
   services:
     - docker:dind
-  before_script:
-    - echo "$DOCKER_ACCESS_TOKEN" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
+    - echo "$DOCKER_ACCESS_TOKEN" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
     - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
     - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
   except:
