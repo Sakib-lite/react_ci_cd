@@ -1,16 +1,13 @@
-docker-build-master:
-  image: docker:latest
+build:
   stage: build
+  image: docker:24.0.5
   services:
-    - docker:dind
+    - docker:24.0.5-dind
   before_script:
-    - echo "$CI_REGISTRY_USER"
-    - echo "$CI_REGISTRY_ACCESS_TOKEN"
-    - echo "$CI_REGISTRY"
-    - echo "Logging into Docker registry..."
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_ACCESS_TOKEN" $CI_REGISTRY
+    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY --username $CI_REGISTRY_USER --password-stdin
+    - docker info
   script:
-    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
-    - docker push "$CI_REGISTRY_IMAGE"
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
   only:
-    - main
+    - merge_requests
