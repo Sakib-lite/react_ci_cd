@@ -1,5 +1,8 @@
 image: node:18-alpine  # Image with Node.js for building React app
 
+services:
+  - docker:dind  # Specify Docker as a service
+
 stages:
   - build_and_push  # Stage for building and pushing the image
 
