@@ -15,9 +15,9 @@ build_and_push:
     - npm run build  # Build the React app (adjust if needed)
     - nohup serve -s build &  # Start serve in the background
     - sleep 10  # Wait for serve to start serving the files
-    - docker build -t sakib75/react_ci_cd:latest .  # Build Docker image
-    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD  # Login to Docker Hub
-    - docker push sakib75/react_ci_cd:latest  # Push Docker image to Docker Hub
+    - /usr/local/bin/docker build -t sakib75/react_ci_cd:latest .  # Build Docker image
+    - /usr/local/bin/docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD  # Login to Docker Hub
+    - /usr/local/bin/docker push sakib75/react_ci_cd:latest  # Push Docker image to Docker Hub
   artifacts:
     paths:
       - app/build/  # Specify the output directory of your build process (adjust path if needed)
