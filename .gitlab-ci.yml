@@ -7,11 +7,10 @@ build_and_push:
   stage: build_and_push
   script:
     - apk add --no-cache npm  # Install npm
-    - npm install -g create-react-app  # Install create-react-app globally if not already installed
-    - create-react-app app  # Create a new React app in the app directory if it doesn't exist
-    - cd app  # Change directory to the app directory
+    - npm install -g serve  # Install serve for serving the static files
     - npm install  # Install dependencies
     - npm run build  # Build the React app (adjust if needed)
+    - serve -s build  # Serve the static files
     - docker build -t sakib75/react_ci_cd:latest .  # Build Docker image (replace with your username)
   artifacts:
     paths:
@@ -21,3 +20,6 @@ build_and_push:
 
 variables:
   DOCKER_USERNAME: $DOCKER_USERNAME  # Protected variable in GitLab settings
+
+services:
+  - docker:dind  # Specify Docker as a service
