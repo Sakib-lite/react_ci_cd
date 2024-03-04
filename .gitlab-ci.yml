@@ -1,8 +1,5 @@
 image: node:18-alpine  # Image with Node.js for building React app
 
-services:
-  - docker:dind  # Specify Docker as a service
-
 stages:
   - build_and_push  # Stage for building and pushing the image
 
@@ -11,18 +8,21 @@ build_and_push:
   script:
     - apk add --no-cache npm  # Install npm
     - npm install -g serve  # Install serve for serving the static files
-    - npm install  # Install dependencies
-    - npm run build  # Build the React app (adjust if needed)
-    - nohup serve -s build &  # Start serve in the background
-    - sleep 10  # Wait for serve to start serving the files
-    - /usr/local/bin/docker build -t sakib75/react_ci_cd:latest .  # Build Docker image
-    - /usr/local/bin/docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD  # Login to Docker Hub
-    - /usr/local/bin/docker push sakib75/react_ci_cd:latest  # Push Docker image to Docker Hub
-  artifacts:
-    paths:
-      - app/build/  # Specify the output directory of your build process (adjust path if needed)
-  only:
-    - main  # Run the pipeline only for pushes to the main branch (optional)
+    - npm install          # Install dependencies
+    - npm run build        # Build the React app (adjust if needed)
+    - serve -s build        # Serve the static files (optional for testing)
+  before_script:
+    - echo $DOCKER_USERNAME:$DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin  # Login to Docker registry (using protected variables)
+  after_script:
+    - docker push sakib75/react_ci_cd:latest  # Push the image to your registry
+
+artifacts:
+  paths:
+    - app/build/  # Specify the output directory of your build process (adjust path if needed)
+
+only:
+  - main  # Run the pipeline only for pushes to the main branch (optional)
 
 variables:
   DOCKER_USERNAME: $DOCKER_USERNAME  # Protected variable in GitLab settings
+  DOCKER_PASSWORD: $DOCKER_PASSWORD  # New protected variable for Docker registry password
