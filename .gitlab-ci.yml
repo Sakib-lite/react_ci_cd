@@ -12,7 +12,7 @@ build:
   script:
     - docker build -t sakib75/react_ci_cd:latest .  # Replace with your actual image name and tag if needed
   only:
-    - master  # Run this stage only on pushes to the master branch (adjust as needed)
+    - main  # Run this stage only on pushes to the master branch (adjust as needed)
 
 push:
   stage: push
@@ -20,7 +20,7 @@ push:
     - docker login "registry-1.docker.io" -u "sakib75" -p "dckr_pat_YUogwaZmsRWsusBWaXl_rT0So90"  # **WARNING: Not recommended for production!**
     - docker push sakib75/react_ci_cd:latest  # Replace with your actual image name and tag if needed
   only:
-    - master
+    - main
   artifacts:
     paths:
       - sakib75/react_ci_cd:latest  # Upload the built image as an artifact (optional)
