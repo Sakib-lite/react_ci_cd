@@ -1,14 +1,30 @@
+image: docker:dind  # Use the Docker-in-Docker executor
+
+services:
+  - docker:dind  # Define a Docker service for building within a container
+
+stages:
+  - build
+  - push
+
 build:
   stage: build
-  image: docker:24.0.5
-  services:
-    - docker:24.0.5-dind
-  before_script:
-    - docker login "registry-1.docker.io" -u "sakib75" -p "dckr_pat_YUogwaZmsRWsusBWaXl_rT0So90"
-    - docker info
   script:
-    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker build -t sakib75/react_ci_cd:latest .  # Replace with your actual image name and tag if needed
   only:
-    - merge_requests
-    
+    - master  # Run this stage only on pushes to the master branch (adjust as needed)
+
+push:
+  stage: push
+  script:
+    - docker login "registry-1.docker.io" -u "sakib75" -p "dckr_pat_YUogwaZmsRWsusBWaXl_rT0So90"  # **WARNING: Not recommended for production!**
+    - docker push sakib75/react_ci_cd:latest  # Replace with your actual image name and tag if needed
+  only:
+    - master
+  artifacts:
+    paths:
+      - sakib75/react_ci_cd:latest  # Upload the built image as an artifact (optional)
+
+cache:
+  paths:
+    - node_modules/  # Cache dependencies to speed up builds (adjust based on your project)
