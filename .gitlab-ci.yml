@@ -27,4 +27,4 @@ push:
 
 cache:
   paths:
-    - node_modules/  # Cache dependencies to speed up builds (adjust based on your project)
+    - node_modules/   # Cache dependencies to speed up builds (adjust based on your project)
