@@ -10,7 +10,7 @@ stages:
 build and push:
   stage: build and push
   script:
-    - docker login "registry-1.docker.io" -u "sakib75" -p "dckr_pat_YUogwaZmsRWsusBWaXl_rT0So90" 
+    - docker login -u "sakib75" -p "dckr_pat_YUogwaZmsRWsusBWaXl_rT0So90" "docker.io"
     - docker build -t sakib75/react_ci_cd:latest .
     - docker push sakib75/react_ci_cd:latest 
   only:
