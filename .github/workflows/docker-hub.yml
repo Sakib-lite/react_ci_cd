@@ -1,6 +1,9 @@
 name: Deploy
+
 on:
-  # No changes
+  push:
+    branches:
+      - '*'  # This will trigger the workflow on every push to any branch
 
 jobs:
   deploy:
