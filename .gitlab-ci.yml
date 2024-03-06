@@ -10,6 +10,8 @@ stages:
 build and push:
   stage: build and push
   script:
+    - echo $DOCKER_USERNAME
+    - echo $DOCKER_ACCESS_TOKEN
     - docker login -u $DOCKER_USERNAME -p $DOCKER_ACCESS_TOKEN "docker.io"
     - docker build -t $CI_REGISTRY_IMAGE:latest .
     - docker push $CI_REGISTRY_IMAGE:latest 
